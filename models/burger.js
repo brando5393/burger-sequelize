@@ -1,24 +1,27 @@
-var orm = require("../config/orm.js");
+const Sequelize = require("sequelize");
+const sequelize = require("../config/connection.js");
 
-var burger = {
-  all: function(cb) {
-    orm.all("burgers", function(res) {
-      cb(res);
-    });
+let burgers = sequelize.define("burgers", {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
   },
-  create: function(name, cb) {
-    orm.create("burgers", [
-      "burger_name", "devoured"
-    ], [
-      name, false
-    ], cb);
+  burger_name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    len: [10,20]
   },
-  update: function(id, cb) {
-    var condition = "id=" + id;
-    orm.update("burgers", {
-      devoured: true
-    }, condition, cb);
+  is_devoured: {
+    type: Sequelize.BOOLEAN,
+    allowNull: false,
+    defaultValue: 0
   }
-};
+},{
+  timestamps: false,
+  freezeTableName: true
+});
+
+burgers.sync();
 
 module.exports = burger;
